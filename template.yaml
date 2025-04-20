@@ -1,0 +1,24 @@
+Resources:
+  ChatbotFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: chatbot-bedrock
+      Handler: bedrock_handler.lambda_handler  # ファイル名変更に対応
+      CodeUri: lambda/
+      Runtime: python3.12
+      Architectures: [x86_64]
+      Timeout: 10
+      Policies:
+        - AmazonBedrockFullAccess
+      Events:
+        ChatbotAPI:
+          Type: Api
+          Properties:
+            Path: /chat
+            Method: post
+            Auth:
+              ResourcePolicy:
+                IpRangeBlacklist:
+                  - "0.0.0.0/0"  # ← 全拒否なので許可リストに変える
+#                IpRangeWhitelist:
+#                  - "xxx.xxx.xxx.xxx/32"  # ← 自分のIP
